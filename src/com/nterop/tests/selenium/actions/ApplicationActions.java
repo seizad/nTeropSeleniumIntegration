@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.Select;
 public class ApplicationActions extends SeleniumActions {
 	
 	protected String baseUrl;
+	static final int DELAY = 5 * 1000;
 	
 	public ApplicationActions(WebDriver d, String baseUrl) {
 		super(d);

@@ -25,24 +25,29 @@ public class Generator {
 //	int num_reports_per_user = 30;
 //	int num_items = 2;
 //	int num_items_per_report = 6;
-	String [][] users = new String [][] {
-			{"aasenmm", "nterop_4dmin"}, 
-			{"HoJM", "nterop_4dmin"},
-			{"BiddisAM", "nterop_4dmin"},
-			{"CasagrKM", "nterop_4dmin"},
-			{"TopsheDE", "nterop_4dmin"},
-			{"CharboJP", "nterop_4dmin"},
-			{"LiKY", "nterop_4dmin"},
-	};
+//	String [][] users = new String [][] {
+//			{"aasenmm", "nterop_4dmin"},
+//			{"HoJM", "nterop_4dmin"},
+//			{"BiddisAM", "nterop_4dmin"},
+//			{"CasagrKM", "nterop_4dmin"},
+//			{"TopsheDE", "nterop_4dmin"},
+//			{"CharboJP", "nterop_4dmin"},
+//			{"LiKY", "nterop_4dmin"},
+//	};
 	
 	WebDriver driver;
-	String baseUrl = "http://hercules";
-	final int TIMEOUT = 40; //seconds
+	String baseUrl;
+	final int TIMEOUT; //seconds
+	
+	public Generator(String baseUrl, int timeout) {
+		TIMEOUT = timeout;
+		this.baseUrl = baseUrl;
+	}
 	
 	private void setup() {
 		System.setProperty("webdriver.firefox.profile", "default");
 		driver = new FirefoxDriver();
-		driver.manage().timeouts().implicitlyWait(40, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(TIMEOUT, TimeUnit.SECONDS);
 	}
 	
 //	@Test
