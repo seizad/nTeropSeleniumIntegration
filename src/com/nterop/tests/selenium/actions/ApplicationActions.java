@@ -175,6 +175,30 @@ public class ApplicationActions extends SeleniumActions {
 			
 			return new ReportBrowsePage(driver);
 		}
+		
+
+		public ReportBrowsePage openMyReports() {
+			driver.findElement(By.id("gwt-debug-nav-link-allitemreports")).click();
+			
+			
+			sleep(DELAY);
+			driver.findElement(By.id("//*[@id='gwt-debug-filter-discloure-header']")).click();
+			
+
+			// sort by updated time
+			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[9]")).click();
+			sleep(DELAY);
+			
+			driver.findElement(By.id("//*[@id='gwt-debug-fitlter-field-label-Created-By-label']")).click();
+			
+			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[9]")).click();
+			sleep(DELAY);
+			
+			driver.findElement(By.linkText("Filter")).click();
+			sleep(DELAY);
+
+			return new ReportBrowsePage(driver);
+		}
 	}
 	
 	public static class ReportFormActions extends SeleniumActions {
@@ -270,6 +294,12 @@ public class ApplicationActions extends SeleniumActions {
 			driver.findElement(By.id("gwt-debug-reportbrowse-actionbar-edit-button")).click();
 			sleep(DELAY);
 			return new ReportEditPage(driver);
+		}
+		
+		public BrowsePage openMyItems() {
+			// Navigate to My Item page
+			driver.findElement(By.id("gwt-debug-nav-link-myitems")).click();
+			return new BrowsePage(driver);
 		}
 	}
 	

@@ -113,9 +113,11 @@ public class Generator {
 
 				for (int i = 0; i < num; i++) {
 					log("Report #" + i);
-					createReport(rbp, num - i);
-					editReport(rbp);
+					createEmptyReport(rbp, num - i);
+					editReportAddActivity(rbp);
+					editReportAddPriority(rbp);
 				}
+				return;
 			} catch (Exception e) { // if it fails for any reason restart
 				log("Encountered problem. Closing the browser and retrying");
 				cleanup();
@@ -123,7 +125,35 @@ public class Generator {
 		}
 	}
 	
-	private void createReport(ReportBrowsePage rbp, int weeksBack) {
+	public void addReportsWithDistrictItems(String username, String password, int num) {
+		while (true) {
+			setup();
+			try {
+
+				app = new ApplicationActions(driver, baseUrl);
+				BrowsePage bp = app.Login(username, password);
+				ReportBrowsePage rbp = bp.openReportBrowsePage();
+
+				for (int i = 0; i < num; i++) {
+					log("Report #" + i);
+					createEmptyReport(rbp, num - i);
+					for (int j=0; j < 5; j++) {
+						bp = rbp.openMyItems();
+						bp = createAndPublishItem(bp);
+						rbp = bp.openReportBrowsePage();
+					}
+					editReportAddActivity(rbp);
+					editReportAddPriority(rbp);
+				}
+				return;
+			} catch (Exception e) { // if it fails for any reason restart
+				log("Encountered problem. Closing the browser and retrying");
+				cleanup();
+			}
+		}
+	}
+	
+	private void createEmptyReport(ReportBrowsePage rbp, int weeksBack) {
 		ReportCreatePage rcp = rbp.openCreatePage();
 		
 		// active date
@@ -138,9 +168,21 @@ public class Generator {
 
 		rcp.selectWestDistrict();
 		
-		addActivityItems(rcp);
-		
 		rcp.saveAndBack();
+	}
+	
+	private void editReportAddActivity(ReportBrowsePage rbp) {
+		ReportEditPage rep = rbp.openEditPage(1);
+		rep.setStatusToActive();
+		addActivityItems(rep);
+		rep.saveAndBack();
+	}
+
+	private void editReportAddPriority(ReportBrowsePage rbp) {
+		ReportEditPage rep = rbp.openEditPage(1);
+		rep.setStatusToActive();
+		addPriorityItems(rep);
+		rep.saveAndBack();
 	}
 	
 	private void editReport(ReportBrowsePage rbp) {
@@ -152,26 +194,26 @@ public class Generator {
 	
 	private void addActivityItems(ReportFormActions rcp) {
 		rcp.openAddActivityItem();
-		addItemsFromOverlay(rcp);
+		addItemsFromOverlay(rcp, random(3, 6));
 	}
 
 	private void addPriorityItems(ReportFormActions rep) {
 		rep.openAddPriorityItem();
-		addItemsFromOverlay(rep);
+		addItemsFromOverlay(rep, random(2, 3));
 	}
 	
-	private void addItemsFromOverlay(ReportFormActions rcp) {
+	private void addItemsFromOverlay(ReportFormActions rcp, int num) {
 		try { //if not enough items don't fail
-			for (int i =1; i < 11; i++) {
-				if(new Random().nextBoolean()) {
+			for (int i =1; i < num + 1; i++) {
+//				if(new Random().nextBoolean()) {
 					rcp.checkMarkItem(i);
-				}
+//				}
 			}
 		}catch (Exception e) {}
 		rcp.saveSelection();
 	}
 	
-	private void createAndPublishItem(BrowsePage page) throws Exception {
+	private BrowsePage createAndPublishItem(BrowsePage page) throws Exception {
 		// Create new item
 		CreatePage cp = page.openCreatePage();
 		cp.setTypes(random(1, 30));
@@ -189,6 +231,8 @@ public class Generator {
 		maybeAddZone(page);
 		maybeAddDistrict(page);
 		maybeAddSummary(page);
+		
+		return page;
 	}
 	
 	private void maybeAddZone(BrowsePage page) {
