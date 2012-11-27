@@ -74,7 +74,8 @@ public class Main {
 									if (!cmd.hasOption(reports_cmd)) {
 										gen.addItems(username, pass, n);
 									} else {
-										gen.addReports(username, pass, n);
+//										gen.addReports(username, pass, n);
+										gen.addReportsWithDistinctItems(username, pass, n);
 									}
 									gen.cleanup();
 								} else {

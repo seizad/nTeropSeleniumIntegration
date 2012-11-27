@@ -3,6 +3,7 @@ import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
@@ -37,13 +38,21 @@ public class Generator {
 	
 	WebDriver driver;
 	String baseUrl;
-	final int TIMEOUT; //seconds
+	int TIMEOUT; //seconds
 	
 	public Generator(String baseUrl, int timeout) {
 		TIMEOUT = timeout;
 		this.baseUrl = baseUrl;
 	}
 	
+//	private void setup() {
+//		System.setProperty("webdriver.firefox.profile", "default");
+//		driver = new FirefoxDriver();
+//		baseUrl = "http://127.0.0.1:8888/WebClient.html?gwt.codesvr=127.0.0.1:9997";
+//		TIMEOUT = 20;
+//		driver.manage().timeouts().implicitlyWait(TIMEOUT, TimeUnit.SECONDS);
+//	}
+
 	private void setup() {
 		System.setProperty("webdriver.firefox.profile", "default");
 		driver = new FirefoxDriver();
@@ -100,18 +109,25 @@ public class Generator {
 		}
 	}
 
-	
-//	@Test
-	public void addReports(String username, String password, int num) {
+	public void addReportsWithDistinctItems(String username, String password, int num) throws Exception {
 		while (true) {
 			setup();
 			try {
 
+				// Create a few items
 				app = new ApplicationActions(driver, baseUrl);
 				BrowsePage bp = app.Login(username, password);
-				ReportBrowsePage rbp = bp.openReportBrowsePage();
+				
+
 
 				for (int i = 0; i < num; i++) {
+					for (int j = 0; j < 5; j++) {
+						log("Item #" + j);
+						createAndPublishItem(bp);
+					}
+					
+					ReportBrowsePage rbp = bp.openMyReports();
+					
 					log("Report #" + i);
 					createEmptyReport(rbp, num - i);
 					editReportAddActivity(rbp);
@@ -125,23 +141,28 @@ public class Generator {
 		}
 	}
 	
-	public void addReportsWithDistrictItems(String username, String password, int num) {
+//	@Test
+//	public void addReports() {
+//		setup();
+//		app = new ApplicationActions(driver, baseUrl);
+//		BrowsePage bp = app.Login("hojm", "nterop_4dmin");
+//		ReportBrowsePage rbp = bp.openMyReports();
+//	}
+	
+//	@Test
+	public void addReports(String username, String password, int num) {
 		while (true) {
 			setup();
 			try {
 
 				app = new ApplicationActions(driver, baseUrl);
 				BrowsePage bp = app.Login(username, password);
-				ReportBrowsePage rbp = bp.openReportBrowsePage();
+//				ReportBrowsePage rbp = bp.openReportBrowsePage();
+				ReportBrowsePage rbp = bp.openMyReports();
 
 				for (int i = 0; i < num; i++) {
 					log("Report #" + i);
 					createEmptyReport(rbp, num - i);
-					for (int j=0; j < 5; j++) {
-						bp = rbp.openMyItems();
-						bp = createAndPublishItem(bp);
-						rbp = bp.openReportBrowsePage();
-					}
 					editReportAddActivity(rbp);
 					editReportAddPriority(rbp);
 				}

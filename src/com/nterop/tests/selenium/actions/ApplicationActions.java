@@ -182,19 +182,24 @@ public class ApplicationActions extends SeleniumActions {
 			
 			
 			sleep(DELAY);
-			driver.findElement(By.id("//*[@id='gwt-debug-filter-discloure-header']")).click();
-			
+//			driver.findElement(By.id("gwt-debug-filter-discloure-header")).click();
+			driver.findElement(By.xpath("//a[@id='gwt-debug-filter-discloure-header']/table/tbody/tr/td[2]")).click();
+
 
 			// sort by updated time
 			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[9]")).click();
 			sleep(DELAY);
 			
-			driver.findElement(By.id("//*[@id='gwt-debug-fitlter-field-label-Created-By-label']")).click();
+//			driver.findElement(By.id("gwt-debug-fitlter-field-label-Created-By-label")).click();
+			driver.findElement(By.id("gwt-debug-fitlter-field-label-Created-By-input")).click();
+
 			
 			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[9]")).click();
 			sleep(DELAY);
 			
-			driver.findElement(By.linkText("Filter")).click();
+//			driver.findElement(By.linkText("Filter")).click();
+			driver.findElement(By.cssSelector("button.gwt-Button")).click();
+
 			sleep(DELAY);
 
 			return new ReportBrowsePage(driver);
