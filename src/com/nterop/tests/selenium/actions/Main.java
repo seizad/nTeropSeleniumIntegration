@@ -1,8 +1,6 @@
 package com.nterop.tests.selenium.actions;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
@@ -11,7 +9,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 import com.googlecode.jcsv.reader.CSVReader;
 import com.googlecode.jcsv.reader.internal.CSVReaderBuilder;
@@ -30,16 +27,20 @@ public class Main {
 
 		// add t option
 		final String timeout_cmd = "timeout";
+		final String delay_cmd = "delay";
 		final String url_cmd = "url";
 		final String user_file_cmd = "file";
 		final String no_cmd = "n";
 		final String reports_cmd = "report";
 		options.addOption(url_cmd, true, "URL to test agains.");
 		options.addOption(timeout_cmd, true, "Selenium Timeout.");
+		options.addOption(delay_cmd, true, "Custom delay for load times.");
 		options.addOption(user_file_cmd, true, "Path to the CSV file containing username passwords.");
 		options.addOption(no_cmd, true, "Number of items or report to generate.");
 		options.addOption(reports_cmd, false, "Create Reports. By default will create Items");
 
+		final HelpFormatter formatter = new HelpFormatter();
+		
 		CommandLineParser parser = new GnuParser();
 		try {
 			// parse the command line arguments
@@ -47,9 +48,11 @@ public class Main {
 			final String user_file = cmd.getOptionValue(user_file_cmd);
 			final String no = cmd.getOptionValue(no_cmd);
 			final String timeout_str = cmd.getOptionValue(timeout_cmd);
+			final String delay_str = cmd.getOptionValue(delay_cmd);
 			final String url = cmd.getOptionValue(url_cmd);
 
 			final int timeout = Integer.valueOf(timeout_str).intValue();
+			final int delay = Integer.valueOf(delay_str).intValue();
 
 			// read username password from file
 			if (user_file != null) {
@@ -67,7 +70,7 @@ public class Main {
 							try {
 								// null) {
 								if (no != null && url != null) {
-									Generator gen = new Generator(url, timeout);
+									Generator gen = new Generator(url, timeout, delay);
 									int n = Integer.valueOf(no).intValue();
 									String username = users[0];
 									String pass = users[1];
@@ -80,8 +83,7 @@ public class Main {
 									gen.cleanup();
 								} else {
 									println("Must provide username password and number of items");
-									HelpFormatter formatter = new HelpFormatter();
-									formatter.printHelp("ant", options);
+									formatter.printHelp("<script-name>", options);
 								}
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
@@ -92,15 +94,10 @@ public class Main {
 				}
 			}
 			
-		} catch (ParseException exp) {
-			// oops, something went wrong
-			System.err.println("Parsing failed.  Reason: " + exp.getMessage());
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
 			System.err.println("Parsing failed.  Reason: " + e.getMessage());
 			e.printStackTrace();
-		} catch (IOException e) {
-			System.err.println("Parsing failed.  Reason: " + e.getMessage());
-			e.printStackTrace();
+			formatter.printHelp( "<script-name>" , options );
 		}
 	}
 

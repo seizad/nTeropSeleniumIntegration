@@ -3,7 +3,6 @@ import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
@@ -21,7 +20,7 @@ public class Generator {
 	
 	ApplicationActions app;
 	LoremIpsum loip = new LoremIpsum();
-	
+	static int DELAY = 8 * 1000;
 	
 //	int num_reports_per_user = 30;
 //	int num_items = 2;
@@ -40,9 +39,10 @@ public class Generator {
 	String baseUrl;
 	int TIMEOUT; //seconds
 	
-	public Generator(String baseUrl, int timeout) {
+	public Generator(String baseUrl, int timeout, int delay) {
 		TIMEOUT = timeout;
 		this.baseUrl = baseUrl;
+		DELAY = delay * 1000;
 	}
 	
 //	private void setup() {
@@ -59,36 +59,6 @@ public class Generator {
 		driver.manage().timeouts().implicitlyWait(TIMEOUT, TimeUnit.SECONDS);
 	}
 	
-//	@Test
-	public void addItemAndReportsMixed() throws Exception {
-//		System.setProperty("webdriver.firefox.profile", "default");
-//		WebDriver driver = new FirefoxDriver();
-////		WebDriver driver = new RemoteWebDriver(new URL("http://hercules:4444/wd/hub/"),
-////				DesiredCapabilities.firefox());
-//		String baseUrl = "http://hercules";
-//		driver.manage().timeouts().implicitlyWait(TIMEOUT, TimeUnit.SECONDS);
-		
-//		setup();
-//		
-//		app = new ApplicationActions(driver, baseUrl);
-//		
-//		for(int u =0; u < users.length ; u++) {
-//			BrowsePage bp = app.Login(users[u][0], users[u][1]);
-//			// for every user create a bunch of reports
-//			for (int i=0; i < num_reports_per_user; i++) {
-//				log("Report #" + i);
-//				// for every report create a bunch of items
-//				for (int j=0; j < num_items_per_report; j++) {
-//					log("Item #" + j);
-//					createAndPublishItem(bp);
-//				}
-//				ReportBrowsePage rbp = bp.openReportBrowsePage();
-//				createReport(rbp, num_reports_per_user - i + 1);
-//				editReport(rbp);
-//			}
-//			app.Logout();
-//		}
-	}
 	
 //	@Test
 	public void addItems(String username, String password, int num) throws Exception {
@@ -121,7 +91,7 @@ public class Generator {
 
 
 				for (int i = 0; i < num; i++) {
-					for (int j = 0; j < 5; j++) {
+					for (int j = 0; j < random(4,5); j++) {
 						log("Item #" + j);
 						createAndPublishItem(bp);
 					}
@@ -141,13 +111,6 @@ public class Generator {
 		}
 	}
 	
-//	@Test
-//	public void addReports() {
-//		setup();
-//		app = new ApplicationActions(driver, baseUrl);
-//		BrowsePage bp = app.Login("hojm", "nterop_4dmin");
-//		ReportBrowsePage rbp = bp.openMyReports();
-//	}
 	
 //	@Test
 	public void addReports(String username, String password, int num) {
@@ -225,6 +188,7 @@ public class Generator {
 	
 	private void addItemsFromOverlay(ReportFormActions rcp, int num) {
 		try { //if not enough items don't fail
+			rcp.filterItemOverlayByMyItems();
 			for (int i =1; i < num + 1; i++) {
 //				if(new Random().nextBoolean()) {
 					rcp.checkMarkItem(i);

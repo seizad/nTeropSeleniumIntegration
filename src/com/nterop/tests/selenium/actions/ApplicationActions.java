@@ -1,6 +1,7 @@
 package com.nterop.tests.selenium.actions;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import com.nterop.tests.selenium.actions.Generator;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -10,7 +11,7 @@ import org.openqa.selenium.support.ui.Select;
 public class ApplicationActions extends SeleniumActions {
 	
 	protected String baseUrl;
-	static final int DELAY = 5 * 1000;
+//	static final int DELAY = 8 * 1000;
 	
 	public ApplicationActions(WebDriver d, String baseUrl) {
 		super(d);
@@ -109,7 +110,7 @@ public class ApplicationActions extends SeleniumActions {
 		
 		public void saveAndBack() {
 			driver.findElement(By.id("gwt-debug-item-form-button-saveandclose")).click();
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 		}
 	}
 
@@ -147,7 +148,7 @@ public class ApplicationActions extends SeleniumActions {
 			driver.findElement(By.id("gwt-debug-nav-compose-new")).click();
 			driver.findElement(By.id("gwt-debug-nav-compose-new-item")).click();
 			
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 			return new CreatePage(driver);
 		}
 		
@@ -159,19 +160,19 @@ public class ApplicationActions extends SeleniumActions {
 		public EditPage openEditPage(int row) {
 			driver.findElement(By.xpath("//table[@id='gwt-debug-browse-table']/tbody/tr/td[" + row + "]/div")).click();
 			driver.findElement(By.id("gwt-debug-itembrowse-actionbar-edit-button")).click();
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 			return new EditPage(driver);
 		}
 		
 		public ReportBrowsePage openReportBrowsePage() {
 			driver.findElement(By.id("gwt-debug-nav-link-allitemreports")).click();
 			
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 			// sort by updated time
 			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[9]")).click();
-			sleep(10000);
+			sleep(Generator.DELAY);
 			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[9]")).click();
-			sleep(10000);
+			sleep(Generator.DELAY);
 			
 			return new ReportBrowsePage(driver);
 		}
@@ -181,26 +182,26 @@ public class ApplicationActions extends SeleniumActions {
 			driver.findElement(By.id("gwt-debug-nav-link-allitemreports")).click();
 			
 			
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 //			driver.findElement(By.id("gwt-debug-filter-discloure-header")).click();
 			driver.findElement(By.xpath("//a[@id='gwt-debug-filter-discloure-header']/table/tbody/tr/td[2]")).click();
 
 
 			// sort by updated time
 			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[9]")).click();
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 			
 //			driver.findElement(By.id("gwt-debug-fitlter-field-label-Created-By-label")).click();
 			driver.findElement(By.id("gwt-debug-fitlter-field-label-Created-By-input")).click();
 
 			
 			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[9]")).click();
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 			
 //			driver.findElement(By.linkText("Filter")).click();
 			driver.findElement(By.cssSelector("button.gwt-Button")).click();
 
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 
 			return new ReportBrowsePage(driver);
 		}
@@ -229,7 +230,7 @@ public class ApplicationActions extends SeleniumActions {
 		
 		public void saveAndBack() {
 			driver.findElement(By.id("gwt-debug-dar-actionbar-saveandclose")).click();
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 		}
 		
 		public void openAddActivityItem() {
@@ -246,6 +247,15 @@ public class ApplicationActions extends SeleniumActions {
 
 		public void openAddPriorityItem() {
 			driver.findElement(By.id("gwt-debug-dar-priority-actionbar-button-add")).click();
+		}
+		
+		public void filterItemOverlayByMyItems() {
+			driver.findElement(By.xpath("//a[@id='gwt-debug-filter-discloure-header']/table/tbody/tr/td[2]")).click();
+			sleep(Generator.DELAY);
+			driver.findElement(By.xpath("//a[@id='gwt-debug-filter-group-By-User-Activity-header']/table/tbody/tr/td[2]")).click();
+			driver.findElement(By.id("gwt-debug-fitlter-field-label-Created-By-input")).click();
+			driver.findElement(By.id("gwt-debug-filter-button")).click();
+			sleep(Generator.DELAY);
 		}
 	}
 	
@@ -283,7 +293,7 @@ public class ApplicationActions extends SeleniumActions {
 			driver.findElement(By.id("gwt-debug-nav-compose-new")).click();
 			driver.findElement(By.id("gwt-debug-nav-compose-new-dar")).click();
 			
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 			return new ReportCreatePage(driver);
 		}
 		
@@ -294,10 +304,10 @@ public class ApplicationActions extends SeleniumActions {
 		 */
 		public ReportEditPage openEditPage(int row) {
 			// select first row and edit
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 			driver.findElement(By.xpath("//table[@id='gwt-debug-browse-table']/tbody/tr/td[" + row + "]/div")).click();
 			driver.findElement(By.id("gwt-debug-reportbrowse-actionbar-edit-button")).click();
-			sleep(DELAY);
+			sleep(Generator.DELAY);
 			return new ReportEditPage(driver);
 		}
 		
@@ -320,7 +330,7 @@ public class ApplicationActions extends SeleniumActions {
 		driver.findElement(By.cssSelector("input[type=\"submit\"]")).click();
 		driver.findElement(By.id("gwt-debug-nav-link-myitems"));
 		
-		sleep(DELAY);
+		sleep(Generator.DELAY);
 
 		// if there was a failure discard unsaved item
 		if (driver.findElements( By.xpath("//a[contains(text(),'Discard')]") ).size() != 0)
@@ -331,7 +341,7 @@ public class ApplicationActions extends SeleniumActions {
 
 	public void Logout() {
 		driver.findElement(By.linkText("Log Out")).click();
-		sleep(DELAY);
+		sleep(Generator.DELAY);
 	}
 	
 	
