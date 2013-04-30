@@ -42,7 +42,7 @@ public class Generator {
 	public void addItems(String username, String password, int num) throws Exception {
 		while (true) {
 			setup();
-			try {
+//			try {
 				app = new ApplicationActions(driver, baseUrl);
 				BrowsePage bp = app.Login(username, password);
 				for (int i = 0; i < num; i++) {
@@ -50,17 +50,17 @@ public class Generator {
 					createAndPublishItem(bp);
 				}
 				return;
-			} catch (Exception e) { // if it fails for any reason restart
-				log("Encountered problem. Closing the browser and retrying");
-				cleanup();
-			} 
+//			} catch (Exception e) { // if it fails for any reason restart
+//				log("Encountered problem. Closing the browser and retrying");
+//				cleanup();
+//			} 
 		}
 	}
 
 	public void addReportsWithDistinctItems(String username, String password, int num) throws Exception {
 		while (true) {
 			setup();
-			try {
+//			try {
 
 				// Create a few items
 				app = new ApplicationActions(driver, baseUrl);
@@ -82,10 +82,10 @@ public class Generator {
 					editReportAddPriority(rbp);
 				}
 				return;
-			} catch (Exception e) { // if it fails for any reason restart
-				log("Encountered problem. Closing the browser and retrying");
-				cleanup();
-			}
+//			} catch (Exception e) { // if it fails for any reason restart
+//				log("Encountered problem. Closing the browser and retrying \n" + e.getMessage());
+//				cleanup();
+//			}
 		}
 	}
 	
@@ -93,7 +93,7 @@ public class Generator {
 	public void addReports(String username, String password, int num) {
 		while (true) {
 			setup();
-			try {
+//			try {
 
 				app = new ApplicationActions(driver, baseUrl);
 				BrowsePage bp = app.Login(username, password);
@@ -106,10 +106,10 @@ public class Generator {
 					editReportAddPriority(rbp);
 				}
 				return;
-			} catch (Exception e) { // if it fails for any reason restart
-				log("Encountered problem. Closing the browser and retrying");
-				cleanup();
-			}
+//			} catch (Exception e) { // if it fails for any reason restart
+//				log("Encountered problem. Closing the browser and retrying");
+//				cleanup();
+//			}
 		}
 	}
 	

@@ -67,10 +67,10 @@ public class Main {
 
 						@Override
 						public void run() {
+							Generator gen = new Generator(url, timeout, delay);
 							try {
 								// null) {
 								if (no != null && url != null) {
-									Generator gen = new Generator(url, timeout, delay);
 									int n = Integer.valueOf(no).intValue();
 									String username = users[0];
 									String pass = users[1];
@@ -86,7 +86,8 @@ public class Main {
 									formatter.printHelp("<script-name>", options);
 								}
 							} catch (Exception e) {
-								// TODO Auto-generated catch block
+								gen.cleanup();
+								gen.log(e.getMessage());
 								e.printStackTrace();
 							}
 						}
