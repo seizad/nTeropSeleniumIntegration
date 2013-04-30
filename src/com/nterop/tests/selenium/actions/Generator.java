@@ -22,19 +22,6 @@ public class Generator {
 	LoremIpsum loip = new LoremIpsum();
 	static int DELAY = 8 * 1000;
 	
-//	int num_reports_per_user = 30;
-//	int num_items = 2;
-//	int num_items_per_report = 6;
-//	String [][] users = new String [][] {
-//			{"aasenmm", "nterop_4dmin"},
-//			{"HoJM", "nterop_4dmin"},
-//			{"BiddisAM", "nterop_4dmin"},
-//			{"CasagrKM", "nterop_4dmin"},
-//			{"TopsheDE", "nterop_4dmin"},
-//			{"CharboJP", "nterop_4dmin"},
-//			{"LiKY", "nterop_4dmin"},
-//	};
-	
 	WebDriver driver;
 	String baseUrl;
 	int TIMEOUT; //seconds
@@ -45,14 +32,6 @@ public class Generator {
 		DELAY = delay * 1000;
 	}
 	
-//	private void setup() {
-//		System.setProperty("webdriver.firefox.profile", "default");
-//		driver = new FirefoxDriver();
-//		baseUrl = "http://127.0.0.1:8888/WebClient.html?gwt.codesvr=127.0.0.1:9997";
-//		TIMEOUT = 20;
-//		driver.manage().timeouts().implicitlyWait(TIMEOUT, TimeUnit.SECONDS);
-//	}
-
 	private void setup() {
 		System.setProperty("webdriver.firefox.profile", "default");
 		driver = new FirefoxDriver();
@@ -60,7 +39,6 @@ public class Generator {
 	}
 	
 	
-//	@Test
 	public void addItems(String username, String password, int num) throws Exception {
 		while (true) {
 			setup();
@@ -112,7 +90,6 @@ public class Generator {
 	}
 	
 	
-//	@Test
 	public void addReports(String username, String password, int num) {
 		while (true) {
 			setup();
@@ -120,7 +97,6 @@ public class Generator {
 
 				app = new ApplicationActions(driver, baseUrl);
 				BrowsePage bp = app.Login(username, password);
-//				ReportBrowsePage rbp = bp.openReportBrowsePage();
 				ReportBrowsePage rbp = bp.openMyReports();
 
 				for (int i = 0; i < num; i++) {
@@ -163,13 +139,6 @@ public class Generator {
 	}
 
 	private void editReportAddPriority(ReportBrowsePage rbp) {
-		ReportEditPage rep = rbp.openEditPage(1);
-		rep.setStatusToActive();
-		addPriorityItems(rep);
-		rep.saveAndBack();
-	}
-	
-	private void editReport(ReportBrowsePage rbp) {
 		ReportEditPage rep = rbp.openEditPage(1);
 		rep.setStatusToActive();
 		addPriorityItems(rep);
@@ -261,10 +230,8 @@ public class Generator {
 	
 	private int random(int from, int to) {
 		return (int)(Math.random() * (to - from)) + from;
-//		return new Random(new Date().getTime()).nextInt(to - from) + from;
 	}
 	
-//	@After
 	public void cleanup() {
 		if (app != null) app.close();
 	}

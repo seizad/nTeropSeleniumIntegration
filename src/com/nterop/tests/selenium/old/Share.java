@@ -1,4 +1,4 @@
-package com.nterop.tests.selenium;
+package com.nterop.tests.selenium.old;
 
 
 import static org.junit.Assert.assertEquals;
