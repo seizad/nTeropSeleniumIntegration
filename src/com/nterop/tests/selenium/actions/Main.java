@@ -32,12 +32,14 @@ public class Main {
 		final String user_file_cmd = "file";
 		final String no_cmd = "n";
 		final String reports_cmd = "report";
+		final String parades_cmd = "parade";
 		options.addOption(url_cmd, true, "URL to test agains.");
 		options.addOption(timeout_cmd, true, "Selenium Timeout.");
 		options.addOption(delay_cmd, true, "Custom delay for load times.");
 		options.addOption(user_file_cmd, true, "Path to the CSV file containing username passwords.");
 		options.addOption(no_cmd, true, "Number of items or report to generate.");
-		options.addOption(reports_cmd, false, "Create Reports. By default will create Items");
+		options.addOption(reports_cmd, false, "If set, will create Reports. By default will create Items");
+		options.addOption(parades_cmd, false, "If set, will create Parades. By default will create Items");
 
 		final HelpFormatter formatter = new HelpFormatter();
 		
@@ -74,20 +76,21 @@ public class Main {
 									int n = Integer.valueOf(no).intValue();
 									String username = users[0];
 									String pass = users[1];
-									if (!cmd.hasOption(reports_cmd)) {
-										gen.addItems(username, pass, n);
-									} else {
-//										gen.addReports(username, pass, n);
+									if (cmd.hasOption(reports_cmd)) {
 										gen.addReportsWithDistinctItems(username, pass, n);
+									} else if (cmd.hasOption(parades_cmd)) {
+										gen.addParadesWithItems(username, pass, n);
+									}else {
+										gen.addItems(username, pass, n);
 									}
 									gen.cleanup();
 								} else {
-									println("Must provide username password and number of items");
+									log("Must provide username password and number of items");
 									formatter.printHelp("<script-name>", options);
 								}
 							} catch (Exception e) {
 								gen.cleanup();
-								gen.log(e.getMessage());
+								log(e.getMessage());
 								e.printStackTrace();
 							}
 						}
@@ -102,7 +105,7 @@ public class Main {
 		}
 	}
 
-	public static void println(String msg) {
+	public static void log(String msg) {
 		System.out.println(msg);
 	}
 }

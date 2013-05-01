@@ -223,6 +223,34 @@ public class ApplicationActions extends SeleniumActions {
 
 			return new ReportBrowsePage(driver);
 		}
+		
+		private void addParadeDistrict(int optionsIndex) {
+			log("Set Parade District");
+			//select first element in list
+			driver.findElement(By
+					.xpath("//*[@id='gwt-debug-parade-detail-location']/tbody/tr/td[1]/table/tbody/tr[2]/td/select/option["
+							+ optionsIndex + "]")).click();
+			// click right arrow button to add to selected list.
+			driver.findElement(
+					By.xpath("//*[@id=gwt-debug-parade-detail-location']/tbody/tr/td[2]/table/tbody/tr[1]/td/button"))
+					.click();
+			
+		}
+		
+		public ParadeManagePage createParade() {
+			log("Create Parade");
+			// sort by updated time
+			// Choose New Item
+			driver.findElement(By.id("gwt-debug-nav-compose-new")).click();
+			driver.findElement(By.id("gwt-debug-nav-compose-new-parade")).click();
+			
+			new Select(driver.findElement(By.id("gwt-debug-parade-detail-shift"))).selectByVisibleText("Morning");
+			
+			addParadeDistrict(3);
+			
+			sleep(Generator.DELAY);
+			return new ParadeManagePage(driver);
+		}
 	}
 	
 	public static class ReportFormActions extends SeleniumActions {
@@ -360,16 +388,16 @@ public class ApplicationActions extends SeleniumActions {
 			log("Parade Browse Page");
 		}
 		
-//		public ParadeCreatePage openCreatePage() {
-//			log("Open Report Create Page");
-//			// sort by updated time
-//			// Choose New Item
-//			driver.findElement(By.id("gwt-debug-nav-compose-new")).click();
-//			driver.findElement(By.id("gwt-debug-nav-compose-new-parade")).click();
-//			
-//			sleep(Generator.DELAY);
-//			return new ParadeCreatePage(driver);
-//		}
+		
+	}
+
+	public static class ParadeManagePage extends SeleniumActions {
+		
+		public ParadeManagePage(WebDriver d) {
+			super(d);
+			log("Parade Browse Page");
+		}
+		
 	}
 	
 	public BrowsePage Login(String UN, String PW) {

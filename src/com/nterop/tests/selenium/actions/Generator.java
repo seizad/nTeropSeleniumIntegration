@@ -9,6 +9,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import com.nterop.tests.selenium.actions.ApplicationActions.BrowsePage;
 import com.nterop.tests.selenium.actions.ApplicationActions.CreatePage;
 import com.nterop.tests.selenium.actions.ApplicationActions.EditPage;
+import com.nterop.tests.selenium.actions.ApplicationActions.ParadeManagePage;
 import com.nterop.tests.selenium.actions.ApplicationActions.ReportBrowsePage;
 import com.nterop.tests.selenium.actions.ApplicationActions.ReportCreatePage;
 import com.nterop.tests.selenium.actions.ApplicationActions.ReportEditPage;
@@ -82,6 +83,38 @@ public class Generator {
 					editReportAddPriority(rbp);
 				}
 				return;
+//			} catch (Exception e) { // if it fails for any reason restart
+//				log("Encountered problem. Closing the browser and retrying \n" + e.getMessage());
+//				cleanup();
+//			}
+		}
+	}
+	
+	public void addParadesWithItems(String username, String password, int num) throws Exception {
+		while (true) {
+			setup();
+//			try {
+			
+			// Create a few items
+			app = new ApplicationActions(driver, baseUrl);
+			BrowsePage bp = app.Login(username, password);
+			
+			ParadeManagePage pmp = bp.createParade();
+			
+//			for (int i = 0; i < num; i++) {
+//				for (int j = 0; j < random(4,5); j++) {
+//					log("Item #" + j);
+//					createAndPublishItem(bp);
+//				}
+//				
+//				ReportBrowsePage rbp = bp.openMyReports();
+//				
+//				log("Report #" + i);
+//				createEmptyReport(rbp, num - i);
+//				editReportAddActivity(rbp);
+//				editReportAddPriority(rbp);
+//			}
+			return;
 //			} catch (Exception e) { // if it fails for any reason restart
 //				log("Encountered problem. Closing the browser and retrying \n" + e.getMessage());
 //				cleanup();
