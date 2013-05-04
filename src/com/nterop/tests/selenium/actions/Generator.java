@@ -1,5 +1,6 @@
 package com.nterop.tests.selenium.actions;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -9,7 +10,6 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import com.nterop.tests.selenium.actions.ApplicationActions.BrowsePage;
 import com.nterop.tests.selenium.actions.ApplicationActions.CreatePage;
 import com.nterop.tests.selenium.actions.ApplicationActions.EditPage;
-import com.nterop.tests.selenium.actions.ApplicationActions.ParadeManagePage;
 import com.nterop.tests.selenium.actions.ApplicationActions.ReportBrowsePage;
 import com.nterop.tests.selenium.actions.ApplicationActions.ReportCreatePage;
 import com.nterop.tests.selenium.actions.ApplicationActions.ReportEditPage;
@@ -43,7 +43,7 @@ public class Generator {
 	public void addItems(String username, String password, int num) throws Exception {
 		while (true) {
 			setup();
-//			try {
+			try {
 				app = new ApplicationActions(driver, baseUrl);
 				BrowsePage bp = app.Login(username, password);
 				for (int i = 0; i < num; i++) {
@@ -51,17 +51,18 @@ public class Generator {
 					createAndPublishItem(bp);
 				}
 				return;
-//			} catch (Exception e) { // if it fails for any reason restart
-//				log("Encountered problem. Closing the browser and retrying");
-//				cleanup();
-//			} 
+			} catch (Exception e) { // if it fails for any reason restart
+				log("Encountered problem. Closing the browser and retrying");
+				cleanup();
+			} 
 		}
 	}
 
 	public void addReportsWithDistinctItems(String username, String password, int num) throws Exception {
+		int r_count = 0;
 		while (true) {
 			setup();
-//			try {
+			try {
 
 				// Create a few items
 				app = new ApplicationActions(driver, baseUrl);
@@ -69,64 +70,81 @@ public class Generator {
 				
 
 
-				for (int i = 0; i < num; i++) {
+				for (; r_count < num; r_count++) {
+					int weeksBack = num - r_count;
+					Calendar from = Calendar.getInstance();
+					from.add(Calendar.WEEK_OF_YEAR, -weeksBack);
+
+					Calendar to = Calendar.getInstance();
+					to.add(Calendar.WEEK_OF_YEAR, -weeksBack+1);
+
 					for (int j = 0; j < random(4,5); j++) {
 						log("Item #" + j);
-						createAndPublishItem(bp);
+						
+						createAndPublishItem(bp, from.getTime(), to.getTime());
 					}
 					
 					ReportBrowsePage rbp = bp.openMyReports();
 					
-					log("Report #" + i);
-					createEmptyReport(rbp, num - i);
+					log("Report #" + r_count);
+					
+//					Calendar cal = Calendar.getInstance();
+//					cal.add(Calendar.WEEK_OF_YEAR, -weeksBack);
+					
+					createEmptyReport(rbp, from.getTime());
 					editReportAddActivity(rbp);
 					editReportAddPriority(rbp);
 				}
 				return;
-//			} catch (Exception e) { // if it fails for any reason restart
-//				log("Encountered problem. Closing the browser and retrying \n" + e.getMessage());
-//				cleanup();
-//			}
+			} catch (Exception e) { // if it fails for any reason restart
+				log("Encountered problem. Closing the browser and retrying \n" + e.getMessage());
+				cleanup();
+			}
 		}
 	}
 	
 	public void addParadesWithItems(String username, String password, int num) throws Exception {
+		// ratio of parades to reports is 6:1
+		int report_num = (int)Math.ceil(num/6.0);
+		int p_count = 0;
+		int r_count = 0;
 		while (true) {
 			setup();
-//			try {
+			try {
 			
-			// Create a few items
-			app = new ApplicationActions(driver, baseUrl);
-			BrowsePage bp = app.Login(username, password);
-			
-			ParadeManagePage pmp = bp.createParade();
-			
-//			for (int i = 0; i < num; i++) {
-//				for (int j = 0; j < random(4,5); j++) {
-//					log("Item #" + j);
-//					createAndPublishItem(bp);
-//				}
-//				
-//				ReportBrowsePage rbp = bp.openMyReports();
-//				
-//				log("Report #" + i);
-//				createEmptyReport(rbp, num - i);
-//				editReportAddActivity(rbp);
-//				editReportAddPriority(rbp);
-//			}
-			return;
-//			} catch (Exception e) { // if it fails for any reason restart
-//				log("Encountered problem. Closing the browser and retrying \n" + e.getMessage());
-//				cleanup();
-//			}
+				// Create a few items
+				for (;r_count < report_num; r_count++) {
+					app = new ApplicationActions(driver, baseUrl);
+					
+					addReportsWithDistinctItems(username, password, 1);
+					app.Logout();
+					
+					for (;p_count < num; p_count++) {
+						
+						BrowsePage bp = app.Login(username, password);
+						
+						bp.createParade();
+						
+						
+						app.Logout();
+					}
+				}
+				return;
+				
+			} catch (Exception e) { // if it fails for any reason restart
+				log("Encountered problem. Closing the browser and retrying \n" + e.getMessage());
+				cleanup();
+			}
 		}
 	}
+	
+	
 	
 	
 	public void addReports(String username, String password, int num) {
 		while (true) {
 			setup();
-//			try {
+			try {
 
 				app = new ApplicationActions(driver, baseUrl);
 				BrowsePage bp = app.Login(username, password);
@@ -139,11 +157,33 @@ public class Generator {
 					editReportAddPriority(rbp);
 				}
 				return;
-//			} catch (Exception e) { // if it fails for any reason restart
-//				log("Encountered problem. Closing the browser and retrying");
-//				cleanup();
-//			}
+			} catch (Exception e) { // if it fails for any reason restart
+				log("Encountered problem. Closing the browser and retrying");
+				cleanup();
+			}
 		}
+	}
+	
+	/*
+	 * TODO: in the midst of taking active date as input and creating a report
+	 * with appropriate active from and to dates.
+	 */
+	private void createEmptyReport(ReportBrowsePage rbp, Date activeDate) {
+		ReportCreatePage rcp = rbp.openCreatePage();
+		
+		// active date
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(activeDate);
+		cal.add(Calendar.DATE, +7);
+		
+		rcp.setFromDate(activeDate);
+		rcp.setToDate(cal.getTime());
+		
+		// inactive date 
+//		rcp.selectWestDistrict();
+		rcp.selectDistrict(random(1,5));
+		
+		rcp.saveAndBack();
 	}
 	
 	private void createEmptyReport(ReportBrowsePage rbp, int weeksBack) {
@@ -159,7 +199,8 @@ public class Generator {
 		cal.add(Calendar.WEEK_OF_YEAR, -weeksBack + 1);
 		rcp.setToDate(cal.getTime());
 
-		rcp.selectWestDistrict();
+//		rcp.selectWestDistrict();
+		rcp.selectDistrict(random(1,5));
 		
 		rcp.saveAndBack();
 	}
@@ -200,12 +241,20 @@ public class Generator {
 		rcp.saveSelection();
 	}
 	
-	private BrowsePage createAndPublishItem(BrowsePage page) throws Exception {
+	private BrowsePage createAndPublishItem(BrowsePage page, Date eff_from, Date eff_to) throws Exception {
 		// Create new item
 		CreatePage cp = page.openCreatePage();
 		cp.setTypes(random(1, 30));
 		cp.setResolution();
 		cp.setTitle(text(5,15));
+
+		if(eff_from != null){
+			cp.setEffectiveFromDate(eff_from);
+		}
+		if(eff_to != null) {
+			cp.setEffectiveToDate(eff_to);
+		}
+		
 		cp.setDescription(paragraph(1, 3));
 		cp.saveAndBack();
 		
@@ -220,6 +269,36 @@ public class Generator {
 		maybeAddSummary(page);
 		
 		return page;
+	}
+	
+	private BrowsePage createAndPublishItem(BrowsePage page) throws Exception {
+		// Create new item
+		return createAndPublishItem(page, null, null);
+//		CreatePage cp = page.openCreatePage();
+//		cp.setTypes(random(1, 30));
+//		cp.setResolution();
+//		cp.setTitle(text(5,15));
+//		if(date != null){
+//			Calendar cal = Calendar.getInstance();
+//			cal.add(Calendar.WEEK_OF_YEAR, -weeksBack);
+//			
+//			cp.setEffectiveFromDate(cal.getTime());
+//			cp.setEffectiveTpDate(cal);
+//		}
+//		cp.setDescription(paragraph(1, 3));
+//		cp.saveAndBack();
+//		
+//		// Publish the item
+//		EditPage ep = page.openEditPage(1);
+//		ep.setToPublished();
+//		ep.saveAndBack();
+//		
+//		// Edit the newly created item.
+//		maybeAddZone(page);
+//		maybeAddDistrict(page);
+//		maybeAddSummary(page);
+//		
+//		return page;
 	}
 	
 	private void maybeAddZone(BrowsePage page) {
@@ -239,7 +318,7 @@ public class Generator {
 			EditPage ep = page.openEditPage(1);
 			// add between 1 to 4 zones
 			for (int i =0; i < random(1, 2);i++) {
-				ep.addDistrict(random(1, 4));
+				ep.addDistrict(random(1, 5));
 			}
 			ep.saveAndBack();
 		}

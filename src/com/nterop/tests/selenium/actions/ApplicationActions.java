@@ -109,10 +109,20 @@ public class ApplicationActions extends SeleniumActions {
 			driver.findElement(By.cssSelector("input.gwt-TextBox")).sendKeys(title);
 		}
 		
+		public void setEffectiveFromDate(Date date) {
+			log("Set Effective-From Date "  + date.toString());
+			driver.findElement(By.xpath("//*[@id='gwt-debug-formfield-Effective-From']/table/tbody/tr/td[1]/table/tbody/tr/td[2]/div/div[2]/input")).sendKeys(new SimpleDateFormat("MMM d, yyyy").format(date));
+		}
+		
+		public void setEffectiveToDate(Date date) {
+			log("Set Effective-To Date "  + date.toString());
+			driver.findElement(By.xpath("//*[@id='gwt-debug-formfield-Effective-To']/table/tbody/tr/td[1]/table/tbody/tr/td[2]/div/div[2]/input")).sendKeys(new SimpleDateFormat("MMM d, yyyy").format(date));
+		}
+		
 		public void setDescription(String description) {
 			log("Set Description");
 			// Write in description
-			String xpath = "//*[@id='gwt-debug-formfield-Details']/table/tbody/tr/td[1]/table/tbody/tr/td[2]/div/div[2]/div/table/tbody/tr/td/span/table/tbody/tr[2]/td/iframe";
+			String xpath = "//*[@id='gwt-debug-formfield-Activity']/table/tbody/tr/td[1]/table/tbody/tr/td[2]/div/div[2]/div/table/tbody/tr/td/span/table/tbody/tr[2]/td/iframe";
 			driver.findElement(By.xpath(xpath)).click();
 			driver.findElement(By.xpath(xpath)).sendKeys(description);
 		}
@@ -206,14 +216,14 @@ public class ApplicationActions extends SeleniumActions {
 
 
 			// sort by updated time
-			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[9]")).click();
+			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[7]")).click();
 			sleep(Generator.DELAY);
 			
 //			driver.findElement(By.id("gwt-debug-fitlter-field-label-Created-By-label")).click();
 			driver.findElement(By.id("gwt-debug-fitlter-field-label-Created-By-input")).click();
 
 			
-			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[9]")).click();
+			driver.findElement(By.xpath("//*[@id='gwt-debug-browse-table']/thead/tr/th[7]")).click();
 			sleep(Generator.DELAY);
 			
 //			driver.findElement(By.linkText("Filter")).click();
@@ -232,7 +242,7 @@ public class ApplicationActions extends SeleniumActions {
 							+ optionsIndex + "]")).click();
 			// click right arrow button to add to selected list.
 			driver.findElement(
-					By.xpath("//*[@id=gwt-debug-parade-detail-location']/tbody/tr/td[2]/table/tbody/tr[1]/td/button"))
+					By.xpath("//*[@id='gwt-debug-parade-detail-location']/tbody/tr/td[2]/table/tbody/tr[1]/td/button"))
 					.click();
 			
 		}
@@ -247,6 +257,8 @@ public class ApplicationActions extends SeleniumActions {
 			new Select(driver.findElement(By.id("gwt-debug-parade-detail-shift"))).selectByVisibleText("Morning");
 			
 			addParadeDistrict(3);
+			
+			driver.findElement(By.id("gwt-debug-parade-detail-ok")).click();
 			
 			sleep(Generator.DELAY);
 			return new ParadeManagePage(driver);
@@ -276,6 +288,14 @@ public class ApplicationActions extends SeleniumActions {
 					driver.findElement(By
 							.xpath("//*[@id='gwt-debug-dar-form-district']/table/tbody/tr/td[1]/table/tbody/tr/td[2]/div/div[2]/select")))
 			.selectByVisibleText("West");
+		}
+		
+		public void selectDistrict(int index) {
+			log("Select West District");
+			new Select(
+					driver.findElement(By
+							.xpath("//*[@id='gwt-debug-dar-form-district']/table/tbody/tr/td[1]/table/tbody/tr/td[2]/div/div[2]/select")))
+			.selectByIndex(index);
 		}
 		
 		public void saveAndBack() {
