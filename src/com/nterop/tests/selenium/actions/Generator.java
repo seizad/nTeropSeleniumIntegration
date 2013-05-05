@@ -24,8 +24,8 @@ public class Generator {
 	static int DELAY = 8 * 1000;
 	
 	WebDriver driver;
-	String baseUrl;
-	int TIMEOUT; //seconds
+	final String baseUrl;
+	final int TIMEOUT; //seconds
 	
 	public Generator(String baseUrl, int timeout, int delay) {
 		TIMEOUT = timeout;
@@ -58,7 +58,7 @@ public class Generator {
 		}
 	}
 
-	public void addReportsWithDistinctItems(String username, String password, int num) throws Exception {
+	public void addReportsWithDistinctItems(String username, String password, int num, String usr_district) throws Exception {
 		int r_count = 0;
 		while (true) {
 			setup();
@@ -71,7 +71,7 @@ public class Generator {
 
 
 				for (; r_count < num; r_count++) {
-					int weeksBack = num - r_count;
+					int weeksBack = num - r_count + 1;
 					Calendar from = Calendar.getInstance();
 					from.add(Calendar.WEEK_OF_YEAR, -weeksBack);
 
@@ -91,7 +91,7 @@ public class Generator {
 //					Calendar cal = Calendar.getInstance();
 //					cal.add(Calendar.WEEK_OF_YEAR, -weeksBack);
 					
-					createEmptyReport(rbp, from.getTime());
+					createEmptyReport(rbp, from.getTime(), usr_district);
 					editReportAddActivity(rbp);
 					editReportAddPriority(rbp);
 				}
@@ -103,7 +103,7 @@ public class Generator {
 		}
 	}
 	
-	public void addParadesWithItems(String username, String password, int num) throws Exception {
+	public void addParadesWithItems(String username, String password, int num, String usr_district) throws Exception {
 		// ratio of parades to reports is 6:1
 		int report_num = (int)Math.ceil(num/6.0);
 		int p_count = 0;
@@ -114,17 +114,22 @@ public class Generator {
 			
 				// Create a few items
 				for (;r_count < report_num; r_count++) {
+					int weeksBack = report_num - r_count + 1;
+					Calendar r_active_date = Calendar.getInstance();
+					r_active_date.add(Calendar.WEEK_OF_YEAR, -weeksBack);
+					
 					app = new ApplicationActions(driver, baseUrl);
 					
-					addReportsWithDistinctItems(username, password, 1);
+					addReportsWithDistinctItems(username, password, 1, usr_district);
 					app.Logout();
 					
+					int i =0;
 					for (;p_count < num; p_count++) {
 						
 						BrowsePage bp = app.Login(username, password);
 						
-						bp.createParade();
-						
+						r_active_date.add(Calendar.DATE, i++);
+						bp.createParade(r_active_date.getTime(), usr_district);
 						
 						app.Logout();
 					}
@@ -168,7 +173,7 @@ public class Generator {
 	 * TODO: in the midst of taking active date as input and creating a report
 	 * with appropriate active from and to dates.
 	 */
-	private void createEmptyReport(ReportBrowsePage rbp, Date activeDate) {
+	private void createEmptyReport(ReportBrowsePage rbp, Date activeDate, String usr_district) {
 		ReportCreatePage rcp = rbp.openCreatePage();
 		
 		// active date
@@ -181,7 +186,8 @@ public class Generator {
 		
 		// inactive date 
 //		rcp.selectWestDistrict();
-		rcp.selectDistrict(random(1,5));
+//		rcp.selectDistrict(random(1,5));
+		rcp.selectDistrict(usr_district);
 		
 		rcp.saveAndBack();
 	}

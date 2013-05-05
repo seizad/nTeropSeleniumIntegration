@@ -76,10 +76,11 @@ public class Main {
 									int n = Integer.valueOf(no).intValue();
 									String username = users[0];
 									String pass = users[1];
+									String usr_district = users[2];
 									if (cmd.hasOption(reports_cmd)) {
-										gen.addReportsWithDistinctItems(username, pass, n);
+										gen.addReportsWithDistinctItems(username, pass, n, usr_district);
 									} else if (cmd.hasOption(parades_cmd)) {
-										gen.addParadesWithItems(username, pass, n);
+										gen.addParadesWithItems(username, pass, n, usr_district);
 									}else {
 										gen.addItems(username, pass, n);
 									}

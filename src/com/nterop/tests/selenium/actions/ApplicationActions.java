@@ -234,6 +234,18 @@ public class ApplicationActions extends SeleniumActions {
 			return new ReportBrowsePage(driver);
 		}
 		
+		private void addParadeDistrict(String district) {
+			log("Set Parade District");
+			//select first element in list
+			new Select(driver.findElement(By
+					.xpath("//*[@id='gwt-debug-parade-detail-location']/tbody/tr/td[1]/table/tbody/tr[2]/td/select/option"))).selectByVisibleText(district);
+			// click right arrow button to add to selected list.
+			driver.findElement(
+					By.xpath("//*[@id='gwt-debug-parade-detail-location']/tbody/tr/td[2]/table/tbody/tr[1]/td/button"))
+					.click();
+			
+		}
+		
 		private void addParadeDistrict(int optionsIndex) {
 			log("Set Parade District");
 			//select first element in list
@@ -247,16 +259,19 @@ public class ApplicationActions extends SeleniumActions {
 			
 		}
 		
-		public ParadeManagePage createParade() {
+		public ParadeManagePage createParade(Date p_date, String usr_district) {
 			log("Create Parade");
-			// sort by updated time
-			// Choose New Item
+			// Choose New Parade
 			driver.findElement(By.id("gwt-debug-nav-compose-new")).click();
 			driver.findElement(By.id("gwt-debug-nav-compose-new-parade")).click();
 			
+			//Select date
+			driver.findElement(By.xpath("//*[@id='gwt-debug-parade-detail-date]")).sendKeys(new SimpleDateFormat("MMM d, yyyy").format(p_date));
+			
 			new Select(driver.findElement(By.id("gwt-debug-parade-detail-shift"))).selectByVisibleText("Morning");
 			
-			addParadeDistrict(3);
+//			addParadeDistrict(3);
+			addParadeDistrict(usr_district);
 			
 			driver.findElement(By.id("gwt-debug-parade-detail-ok")).click();
 			
@@ -296,6 +311,14 @@ public class ApplicationActions extends SeleniumActions {
 					driver.findElement(By
 							.xpath("//*[@id='gwt-debug-dar-form-district']/table/tbody/tr/td[1]/table/tbody/tr/td[2]/div/div[2]/select")))
 			.selectByIndex(index);
+		}
+
+		public void selectDistrict(String district) {
+			log("Select West District");
+			new Select(
+					driver.findElement(By
+							.xpath("//*[@id='gwt-debug-dar-form-district']/table/tbody/tr/td[1]/table/tbody/tr/td[2]/div/div[2]/select")))
+			.selectByVisibleText(district);
 		}
 		
 		public void saveAndBack() {
