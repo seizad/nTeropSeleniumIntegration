@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
 
@@ -238,7 +239,7 @@ public class ApplicationActions extends SeleniumActions {
 			log("Set Parade District");
 			//select first element in list
 			new Select(driver.findElement(By
-					.xpath("//*[@id='gwt-debug-parade-detail-location']/tbody/tr/td[1]/table/tbody/tr[2]/td/select/option"))).selectByVisibleText(district);
+					.xpath("//*[@id='gwt-debug-parade-detail-location']/tbody/tr/td[1]/table/tbody/tr[2]/td/select"))).selectByVisibleText(district);
 			// click right arrow button to add to selected list.
 			driver.findElement(
 					By.xpath("//*[@id='gwt-debug-parade-detail-location']/tbody/tr/td[2]/table/tbody/tr[1]/td/button"))
@@ -266,7 +267,9 @@ public class ApplicationActions extends SeleniumActions {
 			driver.findElement(By.id("gwt-debug-nav-compose-new-parade")).click();
 			
 			//Select date
-			driver.findElement(By.xpath("//*[@id='gwt-debug-parade-detail-date]")).sendKeys(new SimpleDateFormat("MMM d, yyyy").format(p_date));
+			WebElement date_textfield = driver.findElement(By.id("gwt-debug-parade-detail-date"));
+			date_textfield.clear();
+			date_textfield.sendKeys(new SimpleDateFormat("MMM d, yyyy").format(p_date));
 			
 			new Select(driver.findElement(By.id("gwt-debug-parade-detail-shift"))).selectByVisibleText("Morning");
 			

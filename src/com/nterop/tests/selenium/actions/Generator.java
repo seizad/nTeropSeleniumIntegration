@@ -71,29 +71,31 @@ public class Generator {
 
 
 				for (; r_count < num; r_count++) {
-					int weeksBack = num - r_count + 1;
+					int weeksBack = num - r_count;
 					Calendar from = Calendar.getInstance();
 					from.add(Calendar.WEEK_OF_YEAR, -weeksBack);
 
 					Calendar to = Calendar.getInstance();
 					to.add(Calendar.WEEK_OF_YEAR, -weeksBack+1);
+					
+					addReports(bp, usr_district, from.getTime(), to.getTime());
 
-					for (int j = 0; j < random(4,5); j++) {
-						log("Item #" + j);
-						
-						createAndPublishItem(bp, from.getTime(), to.getTime());
-					}
-					
-					ReportBrowsePage rbp = bp.openMyReports();
-					
-					log("Report #" + r_count);
-					
-//					Calendar cal = Calendar.getInstance();
-//					cal.add(Calendar.WEEK_OF_YEAR, -weeksBack);
-					
-					createEmptyReport(rbp, from.getTime(), usr_district);
-					editReportAddActivity(rbp);
-					editReportAddPriority(rbp);
+//					for (int j = 0; j < random(4,5); j++) {
+//						log("Item #" + j);
+//						
+//						createAndPublishItem(bp, from.getTime(), to.getTime());
+//					}
+//					
+//					ReportBrowsePage rbp = bp.openMyReports();
+//					
+//					log("Report #" + r_count);
+//					
+////					Calendar cal = Calendar.getInstance();
+////					cal.add(Calendar.WEEK_OF_YEAR, -weeksBack);
+//					
+//					createEmptyReport(rbp, from.getTime(), usr_district);
+//					editReportAddActivity(rbp);
+//					editReportAddPriority(rbp);
 				}
 				return;
 			} catch (Exception e) { // if it fails for any reason restart
@@ -102,34 +104,61 @@ public class Generator {
 			}
 		}
 	}
+
+	public void addReports(BrowsePage bp, String usr_district, Date from, Date to) throws Exception {
+		for (int j = 0; j < random(4,5); j++) {
+			log("Item #" + j);
+			
+			createAndPublishItem(bp, from, to);
+		}
+		
+		ReportBrowsePage rbp = bp.openMyReports();
+		
+		
+		createEmptyReport(rbp, from, usr_district);
+		editReportAddActivity(rbp);
+		editReportAddPriority(rbp);
+	}
 	
 	public void addParadesWithItems(String username, String password, int num, String usr_district) throws Exception {
 		// ratio of parades to reports is 6:1
-		int report_num = (int)Math.ceil(num/6.0);
+		double parade_to_report_ratio = 6.0;
+		int report_num = (int)Math.ceil(num/parade_to_report_ratio);
 		int p_count = 0;
 		int r_count = 0;
 		while (true) {
 			setup();
 			try {
 			
+				app = new ApplicationActions(driver, baseUrl);
+				BrowsePage bp = app.Login(username, password);
+				
 				// Create a few items
 				for (;r_count < report_num; r_count++) {
-					int weeksBack = report_num - r_count + 1;
-					Calendar r_active_date = Calendar.getInstance();
-					r_active_date.add(Calendar.WEEK_OF_YEAR, -weeksBack);
-					
+					int weeksBack = report_num - r_count;
+//					Calendar r_active_date = Calendar.getInstance();
+//					r_active_date.add(Calendar.WEEK_OF_YEAR, -weeksBack);
+//-----------------					
+					Calendar from = Calendar.getInstance();
+					from.add(Calendar.WEEK_OF_YEAR, -weeksBack);
+
+					Calendar to = Calendar.getInstance();
+					to.add(Calendar.WEEK_OF_YEAR, -weeksBack+1);
+//------------------------
 					app = new ApplicationActions(driver, baseUrl);
 					
-					addReportsWithDistinctItems(username, password, 1, usr_district);
+					log("Report #" + r_count);
+					addReports(bp, usr_district, from.getTime(), to.getTime());
+//					addReportsWithDistinctItems(username, password, 1, usr_district);
 					app.Logout();
 					
-					int i =0;
-					for (;p_count < num; p_count++) {
+					for (int i =0; i < parade_to_report_ratio; i++) {
 						
-						BrowsePage bp = app.Login(username, password);
+						bp = app.Login(username, password);
 						
-						r_active_date.add(Calendar.DATE, i++);
-						bp.createParade(r_active_date.getTime(), usr_district);
+						from.add(Calendar.DATE, 1);
+						log("Parade #" + p_count);
+						bp.createParade(from.getTime(), usr_district);
 						
 						app.Logout();
 					}
@@ -179,7 +208,7 @@ public class Generator {
 		// active date
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(activeDate);
-		cal.add(Calendar.DATE, +7);
+		cal.add(Calendar.DATE, +11);
 		
 		rcp.setFromDate(activeDate);
 		rcp.setToDate(cal.getTime());

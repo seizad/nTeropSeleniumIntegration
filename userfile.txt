@@ -1,1 +1,4 @@
 hojm;nterop_4dmin;East
+liky;nterop_4dmin;West
+CasagrKM;nterop_4dmin;Central East
+KingCL;nterop_4dmin;Central West
